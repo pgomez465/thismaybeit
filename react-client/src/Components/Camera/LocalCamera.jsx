@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SimpleWebRTC from 'simplewebrtc';
 import ReactDOM from 'react-dom';
-import {Row, Col, CardPanel} from 'react-materialize'
+import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize'
 class LocalCamera extends Component {
   constructor(props) {
     super(props);
@@ -36,8 +36,12 @@ class LocalCamera extends Component {
       //construct remote camera video element
       var container = document.createElement('div');
       container.className = 'videoContainer';
-      container.style.cssText = "width:20%, float:left"
+      container.style.cssText = "width:20%; display: inline-block;margin-right: 12px;text-align: center";
       container.id = 'container_' + this.webrtc.getDomId(peer);
+      var textnode = document.createElement("h6");
+      //will replace by real username
+      textnode.textContent = "Username";
+      container.appendChild(textnode);
       container.appendChild(video);
       // suppress contextmenu
       video.oncontextmenu = function() {
@@ -72,19 +76,30 @@ class LocalCamera extends Component {
   render() {
     return (
     < div >
-    <Row>
-      <Col s={12} m={5} >
-        Creating the room
+    <Row id="top">
+      <Col s={12} m={7} >
+        <CardPanel className="">
+          <Row>
+            <Input s={6} label="User Name" />
+            <Input s={6} label="Room Id" />
+          </Row>
+          <Row>
+          <Button waves='light' right>Create Room</Button>
+          <Button waves='light' right>Join Room</Button>
+          </Row>
+        </CardPanel>
       </Col>
-      <Col s={12} m={4} >
+      <Col s={12} m={1} >
       </Col>
       <Col s={12} m={3}>
         <CardPanel className="">
-          <h5>Local Camera</h5>
+          <h5>You</h5>
           < video className = "local"
           id = "localVideo"
           ref = "local" > < /video>
         </CardPanel>
+      </Col>
+      <Col s={12} m={1} >
       </Col>
     </Row>
     <Row>

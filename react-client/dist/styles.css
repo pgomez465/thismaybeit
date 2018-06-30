@@ -5,6 +5,9 @@ header {
   height: 50px;
   color: white;
 }
+button{
+  margin-right: 20px;
+}
 nav{
   background-color: #38435a!important;
 }
