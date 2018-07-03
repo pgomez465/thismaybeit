@@ -41,7 +41,6 @@ class LocalCamera extends Component {
       debug: false,
       detectSpeakingEvents: true,
       autoAdjustMic: false
-      //url: 'https://your-production-signalserver.com/'
     });
     console.log("webrtc component mounted");
     this.webrtc.on('videoAdded', this.addVideo);
@@ -102,7 +101,7 @@ class LocalCamera extends Component {
       }, 1000);
     }
   }
-  //
+
   removeVideo(video, peer) {
     console.log('video removed ', peer);
     var remotes = ReactDOM.findDOMNode(this.refs.remotes);
@@ -111,7 +110,7 @@ class LocalCamera extends Component {
       remotes.removeChild(el);
     }
   }
-  //
+
   readyToCall() {
     //return this.webrtc.joinRoom('change-this-roomname');
   }
@@ -132,29 +131,29 @@ class LocalCamera extends Component {
     console.log('Creating new room: ' + this.state.roomId);
     this.webrtc.createRoom(this.state.roomId, (err, name) => {
       this.setState({
-            showChat: true
-          });
-          this.postMessage(this.state.username + " created chatroom");
+        showChat: true
+      });
+      this.postMessage(this.state.username + " created chatroom");
     });
   }
 
   joinRoom(){
     console.log('Joining room: ' + this.state.roomId);
     this.webrtc.joinRoom(this.state.roomId, (err, roomDescription) =>{
-        if(!err && Object.keys(roomDescription.clients).length){
-          this.setState({
-                  showChat: true
-                });
-                this.postMessage(this.state.username + " joined chatroom");
-        }
-      });
+      if(!err && Object.keys(roomDescription.clients).length){
+        this.setState({
+          showChat: true
+        });
+        this.postMessage(this.state.username + " joined chatroom");
+      }
+    });
   }
 
   leaveRoom(){
     this.webrtc.leaveRoom();
     this.setState({
-            showChat: false
-          });
+      showChat: false
+    });
     this.postMessage(this.state.username + " left chatroom");
   }
 
@@ -182,29 +181,29 @@ class LocalCamera extends Component {
   mute(data){
     console.log("rece")
     this.webrtc.getPeers(data.id).forEach( (peer) => {
-        if (data.name == 'audio') {
-            $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic_off');
-            $('#container_' + this.webrtc.getDomId(peer) + ' > i').removeClass('green-text').addClass('red-text');
-        }
+      if (data.name == 'audio') {
+        $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic_off');
+        $('#container_' + this.webrtc.getDomId(peer) + ' > i').removeClass('green-text').addClass('red-text');
+      }
     });
   }
 
   unmute(data){
     console.log("rece")
     this.webrtc.getPeers(data.id).forEach( (peer) => {
-        if (data.name == 'audio') {
-          console.log($('#container_' + this.webrtc.getDomId(peer) + ' .muted'));
-            $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic');
-            $('#container_' + this.webrtc.getDomId(peer) + ' > i').removeClass('red-text').addClass('green-text');
-        }
+      if (data.name == 'audio') {
+        console.log($('#container_' + this.webrtc.getDomId(peer) + ' .muted'));
+        $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic');
+        $('#container_' + this.webrtc.getDomId(peer) + ' > i').removeClass('red-text').addClass('green-text');
+      }
     });
   }
 
   channelMessage(peer, label, data){
     if (data.type == 'setDisplayName') {
-                    var name = data.payload;
-                    $('#container_' + this.webrtc.getDomId(peer) + ' > h6').html(name);
-                }
+      var name = data.payload;
+      $('#container_' + this.webrtc.getDomId(peer) + ' > h6').html(name);
+    }
   }
 
   postMessage(message){
@@ -228,61 +227,49 @@ class LocalCamera extends Component {
       });
     }
   }
-  //
-  // connect() {
-  //   console.log("connected");
-  // }
-  //
-  // disconnect() {
-  //   console.log("disconnected");
-  // }
 
   render() {
     const isEnabled =
-      this.state.username.length > 0 &&
-      this.state.roomId.length > 0;
+    this.state.username.length > 0 &&
+    this.state.roomId.length > 0;
     return (
-    < div >
     <Row id="top">
       <Col s={12} m={9} >
         <CardPanel className="">
           {this.state.showChat ?
             <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}  <i className="small material-icons title right red-text" onClick={this.leaveRoom}>call_end</i></h5>
-          :
+            :
             <h5>Remote</h5>
           }
-
           < div className = "remotes"
           id = "remoteVideos"
           ref = "remotes" > < /div>
-          </CardPanel>
-      </Col>
-      <Col s={12} m={3}>
-      {this.state.showChat ?
-        <Chat messages={this.state.messages} postMessage={this.postMessage}/>
-      : <CardPanel className="">
-        <Row>
-          <Input s={6} label="User Name" onChange={this.updateUserName}/>
-          <Input s={6} label="Room Id" onChange={this.updateRoomId}/>
-        </Row>
-        <Row>
-          <Button waves='light' disabled={!isEnabled} onClick={this.createRoom}>Create Room</Button>
-          <Button waves='light' disabled={!isEnabled} onClick={this.joinRoom}>Join Room</Button>
-          </Row>
-        </CardPanel>}
-        <CardPanel className="videoContainer">
-          <h5>You{this.state.username.length > 0 ? " : " + this.state.username : null}</h5>
-          < video className = "local"
-          id = "localVideo"
-          ref = "local" > < /video>
-            <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`} onClick={this.muteToggle}>{this.state.mute ? "mic_off" : "mic"}</i>
-
-          <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
         </CardPanel>
       </Col>
-    </Row>
-    < /div >
-    );
+      <Col s={12} m={3}>
+        {this.state.showChat ?
+          <Chat messages={this.state.messages} postMessage={this.postMessage}/>
+          : <CardPanel className="">
+            <Row>
+              <Input s={6} label="User Name" onChange={this.updateUserName}/>
+              <Input s={6} label="Room Id" onChange={this.updateRoomId}/>
+            </Row>
+            <Row>
+              <Button waves='light' disabled={!isEnabled} onClick={this.createRoom}>Create Room</Button>
+              <Button waves='light' disabled={!isEnabled} onClick={this.joinRoom}>Join Room</Button>
+            </Row>
+          </CardPanel>}
+          <CardPanel className="videoContainer">
+            <h5>You{this.state.username.length > 0 ? " : " + this.state.username : null}</h5>
+            < video className = "local"
+            id = "localVideo"
+            ref = "local" > < /video>
+            <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`} onClick={this.muteToggle}>{this.state.mute ? "mic_off" : "mic"}</i>
+            <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
+          </CardPanel>
+        </Col>
+      </Row>
+      );
+    }
   }
-}
-export default LocalCamera;
+  export default LocalCamera;

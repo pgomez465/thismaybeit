@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import { browserHistory } from 'react-router';
-import HomePage from './HomePage';
 import NavBar from './HeaderComponent/NavBar';
 import LocalCamera from './Camera/LocalCamera';
 class App extends Component {
@@ -11,7 +10,6 @@ class App extends Component {
         <div>
           <NavBar />
           <LocalCamera />
-          <Route name="home" exact path="/" component={HomePage} />
         </div>
       </Router>
     )
