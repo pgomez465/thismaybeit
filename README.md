@@ -4,8 +4,7 @@ A live-stream video chat app that leverages the RTC protocol, built with React, 
 
 ## Project Status
 
-This project is currently in development. Users can create or join a chat room with username and roomId. In the chat room, uses can have voice, video and text message conversation with others in the same room.
-
+This project is currently in development. Users can create or join a chat room with username and roomId. In the chat room, uses can have voice, video and text message conversation with others.
 ## Project Screen Shot(s)
 
 [ PRETEND SCREEN SHOT IS HERE ]
