@@ -3,6 +3,7 @@ import SimpleWebRTC from 'simplewebrtc';
 import ReactDOM from 'react-dom';
 import { Col, CardPanel, Input, Button, Icon} from 'react-materialize'
 import { ThemeProvider,FixedWrapper, MessageList, MessageGroup, Message, MessageText, Avatar, Row, TitleBar, IconButton, CloseIcon} from '@livechat/ui-kit'
+//Define theme for live chat
 const theme = {
   vars: {
     'primary-color': '#427fe1',
@@ -25,6 +26,7 @@ const theme = {
     },
   },
 }
+
 class Chat extends Component {
   constructor(props){
     super(props);
@@ -34,6 +36,7 @@ class Chat extends Component {
     this.post = this.post.bind(this);
     this.setMessage = this.setMessage.bind(this);
   }
+
   componentDidMount() {
     this.scrollToBottom();
   }
@@ -49,6 +52,7 @@ class Chat extends Component {
     const maxScrollTop = scrollHeight - height;
     this.chatBox.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
+
   post(){
     if(this.state.message.length > 0){
       this.props.postMessage(this.state.message);
@@ -57,22 +61,24 @@ class Chat extends Component {
       });
     }
   }
+
   setMessage(event){
     this.setState({
       message: event.target.value
     });
   }
+
   render(){
     return(
-    <CardPanel>
-      <h5> Live Chat <i className="material-icons btn-small title">chat_bubble_outline</i></h5>
-      <hr/>
-      <div ref={ref => this.chatBox = ref} className="chat">
-        <ThemeProvider theme={theme}>
-          <MessageList active containScrollInSubtree>
-            {this.props.messages.map((message) => {
+      <CardPanel>
+        <h5> Live Chat <i className="material-icons btn-small title">chat_bubble_outline</i></h5>
+        <hr/>
+        <div ref={ref => this.chatBox = ref} className="chat">
+          <ThemeProvider theme={theme}>
+            <MessageList active containScrollInSubtree>
+              {this.props.messages.map((message) => {
 
-              return  <Row><Avatar id="name-avatar" isOwn={true} letter={message.username.charAt(0).toUpperCase()} />
+                return  <Row><Avatar id="name-avatar" isOwn={true} letter={message.username.charAt(0).toUpperCase()} />
                 <Message authorName={message.username} date={message.postedOn}>
                   <MessageText>{message.message}</MessageText>
                 </Message></Row>

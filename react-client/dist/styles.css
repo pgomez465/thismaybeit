@@ -24,8 +24,7 @@ nav{
   text-align: center;
 }
 .chat{
-  height: 160px;
-  overflow-y: scroll;
+  height: 220px;
 }
 #name-avatar{
   background-color: #9e9e9e;

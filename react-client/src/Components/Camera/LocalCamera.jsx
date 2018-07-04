@@ -6,23 +6,29 @@ import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize'
 class LocalCamera extends Component {
   constructor(props) {
     super(props);
+
+    //Video
     this.addVideo = this.addVideo.bind(this);
     this.removeVideo = this.removeVideo.bind(this);
     this.readyToCall = this.readyToCall.bind(this);
+    //Chat room
     this.updateUserName = this.updateUserName.bind(this);
     this.updateRoomId = this.updateRoomId.bind(this);
     this.createRoom = this.createRoom.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
+    //Volumn
     this.volumeChange = this.volumeChange.bind(this);
     this.remoteVolumeChange = this.remoteVolumeChange.bind(this);
     this.showVolume = this.showVolume.bind(this);
     this.muteToggle = this.muteToggle.bind(this);
     this.mute = this.mute.bind(this);
     this.unmute = this.unmute.bind(this);
+    //Messages
     this.channelMessage = this.channelMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
     this.message = this.message.bind(this);
+
     this.state = {
       username: '',
       roomId: '',
@@ -31,6 +37,7 @@ class LocalCamera extends Component {
       showChat: false
     }
   }
+
   componentDidMount() {
     this.webrtc = new SimpleWebRTC({
       localVideoEl: ReactDOM.findDOMNode(this.refs.local),
@@ -42,6 +49,7 @@ class LocalCamera extends Component {
       detectSpeakingEvents: true,
       autoAdjustMic: false
     });
+
     console.log("webrtc component mounted");
     this.webrtc.on('videoAdded', this.addVideo);
     this.webrtc.on('videoRemoved', this.removeVideo);
@@ -53,18 +61,20 @@ class LocalCamera extends Component {
     this.webrtc.on('channelMessage', this.channelMessage);
     this.webrtc.connection.on('message', this.message);
   }
+
   volumeChange(volume, treshold){
     //console.log('local volumn change');
     this.showVolume(document.getElementById('localVolume'), volume);
   }
+
   remoteVolumeChange(peer, volume){
     //console.log('remote volumn change');
     this.showVolume(document.getElementById('volume_' + peer.id), volume);
   }
+
   addVideo(video, peer) {
     console.log('video added', peer);
     var remotes = ReactDOM.findDOMNode(this.refs.remotes);
-    console.log(remotes);
     if (remotes) {
       //construct remote camera video element
       var container = document.createElement('div');
@@ -94,7 +104,6 @@ class LocalCamera extends Component {
       video.oncontextmenu = function() {
         return false;
       };
-      console.log(container);
       remotes.appendChild(container);
       setTimeout(() =>{
         this.webrtc.sendDirectlyToAll(this.state.roomId, "setDisplayName", this.state.username);
@@ -171,10 +180,9 @@ class LocalCamera extends Component {
 
   // helper function to show the volume
   showVolume(el, volume) {
-    //console.log('showVolume', volume, el);
     if (!el) return;
-    if (volume < -45) volume = -45; // -45 to -20 is
-    if (volume > -20) volume = -20; // a good range
+    if (volume < -45) volume = -45;
+    if (volume > -20) volume = -20;
     el.value = volume;
   }
 
@@ -233,42 +241,40 @@ class LocalCamera extends Component {
     this.state.username.length > 0 &&
     this.state.roomId.length > 0;
     return (
-    <Row id="top">
-      <Col s={12} m={9} >
-        <CardPanel className="">
-          {this.state.showChat ?
-            <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}  <i className="small material-icons title right red-text" onClick={this.leaveRoom}>call_end</i></h5>
-            :
-            <h5>Remote</h5>
-          }
-          < div className = "remotes"
-          id = "remoteVideos"
-          ref = "remotes" > < /div>
-        </CardPanel>
-      </Col>
-      <Col s={12} m={3}>
-        {this.state.showChat ?
-          <Chat messages={this.state.messages} postMessage={this.postMessage}/>
-          : <CardPanel className="">
-            <Row>
-              <Input s={6} label="User Name" onChange={this.updateUserName}/>
-              <Input s={6} label="Room Id" onChange={this.updateRoomId}/>
-            </Row>
-            <Row>
-              <Button waves='light' disabled={!isEnabled} onClick={this.createRoom}>Create Room</Button>
-              <Button waves='light' disabled={!isEnabled} onClick={this.joinRoom}>Join Room</Button>
-            </Row>
-          </CardPanel>}
-          <CardPanel className="videoContainer">
-            <h5>You{this.state.username.length > 0 ? " : " + this.state.username : null}</h5>
-            < video className = "local"
-            id = "localVideo"
-            ref = "local" > < /video>
-            <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`} onClick={this.muteToggle}>{this.state.mute ? "mic_off" : "mic"}</i>
-            <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
+      <Row id="top">
+        <Col s={12} m={9} >
+          <CardPanel className="">
+            {this.state.showChat ?
+              <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}  <i className="small material-icons title right red-text" onClick={this.leaveRoom}>call_end</i></h5>
+              :
+              <h5>Remote</h5>
+            }
+            < div className = "remotes" id = "remoteVideos" ref = "remotes" > < /div>
           </CardPanel>
         </Col>
-      </Row>
+        <Col s={12} m={3}>
+          {this.state.showChat ?
+            <Chat messages={this.state.messages} postMessage={this.postMessage}/>
+            : <CardPanel className="">
+              <Row>
+                <Input s={6} label="User Name" onChange={this.updateUserName}/>
+                <Input s={6} label="Room Id" onChange={this.updateRoomId}/>
+              </Row>
+              <Row>
+                <Button waves='light' disabled={!isEnabled} onClick={this.createRoom}>Create Room</Button>
+                <Button waves='light' disabled={!isEnabled} onClick={this.joinRoom}>Join Room</Button>
+              </Row>
+            </CardPanel>}
+            <CardPanel className="videoContainer">
+              <h5>You{this.state.username.length > 0 ? " : " + this.state.username : null}</h5>
+              < video className = "local"
+              id = "localVideo"
+              ref = "local" > < /video>
+              <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`} onClick={this.muteToggle}>{this.state.mute ? "mic_off" : "mic"}</i>
+              <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
+            </CardPanel>
+          </Col>
+        </Row>
       );
     }
   }
