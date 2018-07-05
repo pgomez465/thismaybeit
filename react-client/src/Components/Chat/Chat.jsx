@@ -77,7 +77,6 @@ class Chat extends Component {
           <ThemeProvider theme={theme}>
             <MessageList active containScrollInSubtree>
               {this.props.messages.map((message) => {
-
                 return  <Row><Avatar id="name-avatar" isOwn={true} letter={message.username.charAt(0).toUpperCase()} />
                 <Message authorName={message.username} date={message.postedOn}>
                   <MessageText>{message.message}</MessageText>
@@ -88,7 +87,7 @@ class Chat extends Component {
         </div>
         <hr/>
         <Input s={6} value={this.state.message} label="Message" onChange={this.setMessage} onKeyPress={event => {
-          var code = event.keyCode || event.which;
+          let code = event.keyCode || event.which;
           if(code === 13) { //13 is the enter keycode
             this.post();
           }

@@ -6,7 +6,13 @@ import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize'
 class LocalCamera extends Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      username: '',
+      roomId: '',
+      messages: [],
+      mute: false,
+      showChat: false
+    }
     //Video
     this.addVideo = this.addVideo.bind(this);
     this.removeVideo = this.removeVideo.bind(this);
@@ -28,14 +34,6 @@ class LocalCamera extends Component {
     this.channelMessage = this.channelMessage.bind(this);
     this.postMessage = this.postMessage.bind(this);
     this.message = this.message.bind(this);
-
-    this.state = {
-      username: '',
-      roomId: '',
-      messages: [],
-      mute: false,
-      showChat: false
-    }
   }
 
   componentDidMount() {
@@ -74,25 +72,25 @@ class LocalCamera extends Component {
 
   addVideo(video, peer) {
     console.log('video added', peer);
-    var remotes = ReactDOM.findDOMNode(this.refs.remotes);
+    const remotes = ReactDOM.findDOMNode(this.refs.remotes);
     if (remotes) {
       //construct remote camera video element
-      var container = document.createElement('div');
+      const container = document.createElement('div');
       container.className = 'videoContainer';
       container.style.cssText = "width:30%; display: inline-block;margin-right: 12px;text-align: center";
       container.id = 'container_' + this.webrtc.getDomId(peer);
-      var textnode = document.createElement("h6");
+      const textnode = document.createElement("h6");
       //will replace by real username
       textnode.textContent = peer.nick;
       container.appendChild(textnode);
       container.appendChild(video);
       // add muted and paused elements
-      var mutedIcon = document.createElement('i');
+      const mutedIcon = document.createElement('i');
       mutedIcon.className = 'Small material-icons title green-text';
       mutedIcon.innerHTML = 'mic';
       container.appendChild(mutedIcon);
       // show the remote volume
-      var vol = document.createElement('meter');
+      const vol = document.createElement('meter');
       vol.id = 'volume_' + peer.id;
       vol.className = 'volume';
       vol.min = -45;
@@ -113,8 +111,8 @@ class LocalCamera extends Component {
 
   removeVideo(video, peer) {
     console.log('video removed ', peer);
-    var remotes = ReactDOM.findDOMNode(this.refs.remotes);
-    var el = document.getElementById(peer ? 'container_' +       this.webrtc.getDomId(peer) : 'localScreenContainer');
+    const remotes = ReactDOM.findDOMNode(this.refs.remotes);
+    const el = document.getElementById(peer ? 'container_' +       this.webrtc.getDomId(peer) : 'localScreenContainer');
     if (remotes && el) {
       remotes.removeChild(el);
     }
@@ -160,10 +158,15 @@ class LocalCamera extends Component {
 
   leaveRoom(){
     this.webrtc.leaveRoom();
+    this.postMessage(this.state.username + " left chatroom");
     this.setState({
+      username: '',
+      roomId: '',
+      messages: [],
+      mute: false,
       showChat: false
     });
-    this.postMessage(this.state.username + " left chatroom");
+    console.log(this.state);
   }
 
   muteToggle(){
@@ -187,7 +190,6 @@ class LocalCamera extends Component {
   }
 
   mute(data){
-    console.log("rece")
     this.webrtc.getPeers(data.id).forEach( (peer) => {
       if (data.name == 'audio') {
         $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic_off');
@@ -197,10 +199,8 @@ class LocalCamera extends Component {
   }
 
   unmute(data){
-    console.log("rece")
     this.webrtc.getPeers(data.id).forEach( (peer) => {
       if (data.name == 'audio') {
-        console.log($('#container_' + this.webrtc.getDomId(peer) + ' .muted'));
         $('#container_' + this.webrtc.getDomId(peer) + ' > i').html('mic');
         $('#container_' + this.webrtc.getDomId(peer) + ' > i').removeClass('red-text').addClass('green-text');
       }
@@ -209,14 +209,14 @@ class LocalCamera extends Component {
 
   channelMessage(peer, label, data){
     if (data.type == 'setDisplayName') {
-      var name = data.payload;
+      let name = data.payload;
       $('#container_' + this.webrtc.getDomId(peer) + ' > h6').html(name);
     }
   }
 
   postMessage(message){
-    let username = this.state.username;
-    var chatMessage = {
+    const username = this.state.username;
+    const chatMessage = {
       username,
       message,
       postedOn: new Date().toLocaleString('en-GB'),
