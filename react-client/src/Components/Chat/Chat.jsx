@@ -70,7 +70,7 @@ class Chat extends Component {
 
   render(){
     return(
-      <CardPanel>
+      <div className="ChatDiv">
         <h5> Live Chat <i className="material-icons btn-small title">chat_bubble_outline</i></h5>
         <hr/>
         <div ref={ref => this.chatBox = ref} className="chat">
@@ -93,7 +93,7 @@ class Chat extends Component {
           }
         }}/>
         <Button waves='light' onClick={this.post}><Icon>send</Icon></Button>
-      </CardPanel>
+      </div>
     );
   }
 }

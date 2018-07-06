@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import SimpleWebRTC from 'simplewebrtc';
 import ReactDOM from 'react-dom';
-import Chat from '../Chat/Chat'
-import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize'
+import { Link } from 'react-router-dom';
+import Chat from '../Chat/Chat';
+import Clipboard from 'clipboard';
+import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize';
 class LocalCamera extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      roomId: '',
+      roomId: this.props.match.params.roomId,
       messages: [],
       mute: false,
       showChat: false
@@ -19,6 +21,7 @@ class LocalCamera extends Component {
     this.readyToCall = this.readyToCall.bind(this);
     //Chat room
     this.updateUserName = this.updateUserName.bind(this);
+    this.procastUsername = this.procastUsername.bind(this);
     this.updateRoomId = this.updateRoomId.bind(this);
     this.createRoom = this.createRoom.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
@@ -59,6 +62,15 @@ class LocalCamera extends Component {
     this.webrtc.on('unmute', this.unmute);
     this.webrtc.on('channelMessage', this.channelMessage);
     this.webrtc.connection.on('message', this.message);
+
+    const clipboard = new Clipboard('.copylink');
+    clipboard.on('success', function(e) {
+      console.info('Action:', e.action);
+      console.info('Text:', e.text);
+      console.info('Trigger:', e.trigger);
+      $('.copylink').html('Copied Link!');
+    });
+
   }
 
   volumeChange(volume, treshold){
@@ -120,13 +132,17 @@ class LocalCamera extends Component {
   }
 
   readyToCall() {
-    //return this.webrtc.joinRoom('change-this-roomname');
+    this.joinRoom();;
   }
 
   updateUserName(event){
     this.setState({
       username: event.target.value
     });
+  }
+
+  procastUsername(){
+    this.webrtc.sendDirectlyToAll(this.state.roomId, "setDisplayName", this.state.username);
   }
 
   updateRoomId(event){
@@ -148,12 +164,10 @@ class LocalCamera extends Component {
   joinRoom(){
     console.log('Joining room: ' + this.state.roomId);
     this.webrtc.joinRoom(this.state.roomId, (err, roomDescription) =>{
-      if(!err && Object.keys(roomDescription.clients).length){
         this.setState({
           showChat: true
         });
         this.postMessage(this.state.username + " joined chatroom");
-      }
     });
   }
 
@@ -243,37 +257,48 @@ class LocalCamera extends Component {
     this.state.roomId.length > 0;
     return (
       <Row id="top">
-        <Col s={12} m={9} >
-          <CardPanel className="">
+        <Col s={12} m={2} >
+          <Chat messages={this.state.messages} postMessage={this.postMessage}/>
+        </Col>
+        <Col s={12} m={8} className="roomContainer">
             {this.state.showChat ?
-              <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}  <i className="small material-icons title right red-text" onClick={this.leaveRoom}>call_end</i></h5>
+              <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}
+
+            </h5>
               :
               <h5>Remote</h5>
             }
-            < div className = "remotes" id = "remoteVideos" ref = "remotes" > < /div>
-          </CardPanel>
+            <div className = "remotes" id = "remoteVideos" ref = "remotes"> </div>
         </Col>
-        <Col s={12} m={3}>
-          {this.state.showChat ?
-            <Chat messages={this.state.messages} postMessage={this.postMessage}/>
-            : <CardPanel className="">
-              <Row>
-                <Input s={6} label="User Name" onChange={this.updateUserName}/>
-                <Input s={6} label="Room Id" onChange={this.updateRoomId}/>
-              </Row>
-              <Row>
-                <Button waves='light' disabled={!isEnabled} onClick={this.createRoom}>Create Room</Button>
-                <Button waves='light' disabled={!isEnabled} onClick={this.joinRoom}>Join Room</Button>
-              </Row>
-            </CardPanel>}
-            <CardPanel className="videoContainer">
-              <h5>You{this.state.username.length > 0 ? " : " + this.state.username : null}</h5>
-              < video className = "local"
+        <Col s={12} m={2}>
+
+            <div className="videoContainer">
+              <Button className='copylink' data-clipboard-text={window.location.href} waves='light'>
+                Invite
+                <Icon left tiny>link</Icon>
+              </Button>
+              <Link to="/">
+                <Button className='btn-flat grey lighten-2' waves='light' onClick={this.leaveRoom}>
+                  Leave
+                  <Icon className="red-text" left tiny>call_end</Icon>
+                </Button>
+              </Link>
+              <Input s={12} placeholder="Your Name" validate onChange={this.updateUserName} onKeyPress={event => {
+                let code = event.keyCode || event.which;
+                if(code === 13) { //13 is the enter keycode
+                  this.procastUsername();
+                }
+              }}>
+                <Icon className="username">account_circle</Icon>
+              </Input>
+              <video className = "local"
               id = "localVideo"
-              ref = "local" > < /video>
-              <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`} onClick={this.muteToggle}>{this.state.mute ? "mic_off" : "mic"}</i>
+              ref = "local"> </video>
+              <a class="waves-effect waves-light grey lighten-2" onClick={this.muteToggle}>
+                <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`}>{this.state.mute ? "mic_off" : "mic"}</i>
+              </a>
               <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
-            </CardPanel>
+            </div>
           </Col>
         </Row>
       );
