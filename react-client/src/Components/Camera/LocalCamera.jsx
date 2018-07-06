@@ -45,7 +45,8 @@ class LocalCamera extends Component {
       autoRequestMedia: true,
       debug: false,
       detectSpeakingEvents: true,
-      autoAdjustMic: false
+      autoAdjustMic: false,
+      url: "https://glacial-sea-76028.herokuapp.com/"
     });
 
     console.log("webrtc component mounted");
