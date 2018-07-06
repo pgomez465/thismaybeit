@@ -1,12 +1,16 @@
 ## VChat
 
-A live-stream video chat app that leverages the RTC protocol, built with React, Redux, Webrtc, NodeJS, and Express.
+A live-stream video chat app that leverages the RTC protocol, built with WebRTC, signaling server and STUN server, using React, Redux, Webrtc, NodeJS, Express and socket.io.
 
 [Demo] -> https://vchat-demo-1118.herokuapp.com/
 
 ## Project Status
 
 This project is currently in development. Users can create or join a chat room with username and roomId. In the chat room, uses can have voice, video and text message conversation with others.
+
+## Project Architecture
+
+![](https://image.slidesharecdn.com/introductiontowebrtcslideshare-160120114421/95/introduction-to-webrtc-6-638.jpg?cb=1453290542)
 
 ## Project Screen Shots
 Set up chat room           |  Chat room
