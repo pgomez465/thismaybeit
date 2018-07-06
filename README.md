@@ -1,6 +1,7 @@
 ## VChat
 
-A live-stream video chat app that leverages the RTC protocol, built with WebRTC, signaling server and STUN server, using React, Redux, Webrtc, NodeJS, Express and socket.io.
+A live-stream video chat app that leverages the RTC protocol and it is capable of multi-party conferencing.
+Built with WebRTC, signaling server and STUN server, using React, Redux, Webrtc, NodeJS, Express and socket.io.
 
 [Demo] -> https://vchat-demo-1118.herokuapp.com/
 
