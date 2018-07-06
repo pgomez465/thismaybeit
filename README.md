@@ -15,7 +15,7 @@ This project is currently in development. Users can create or join a chat room w
 ## Project Screen Shots
 Set up chat room           |  Chat room
 :-------------------------:|:-------------------------:
-![](https://preview.ibb.co/b1xPcJ/Vchat_fifth_Capture.png)  |  ![](https://preview.ibb.co/n65o4y/VCHAT_fourth_Capture.png)
+![](https://preview.ibb.co/mHdDBd/Stage_2_Capture_2.png)  |  ![](https://preview.ibb.co/j8rN4y/Stage_2_Capture1.png)
 
 ## Installation and Setup Instructions
 
