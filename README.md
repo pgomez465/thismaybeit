@@ -4,9 +4,8 @@ A live-stream video chat app that leverages the RTC protocol, built with WebRTC,
 
 [Demo] -> https://vchat-demo-1118.herokuapp.com/
 
-## Project Status
-
-This project is currently in development. Users can create or join a chat room with username and roomId. In the chat room, uses can have voice, video and text message conversation with others.
+Users can create or join a chat room with a room name.  
+In the chat room, uses can have voice, video and text message conversation with others.
 
 ## Project Architecture
 
