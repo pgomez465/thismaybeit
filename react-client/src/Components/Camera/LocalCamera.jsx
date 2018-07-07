@@ -230,10 +230,10 @@ class LocalCamera extends Component {
       message,
       postedOn: new Date().toLocaleString('en-GB'),
     }
-    this.webrtc.sendToAll('chat', chatMessage);
     this.setState({
       messages: [...this.state.messages, chatMessage]
     });
+    this.webrtc.sendToAll('chat', chatMessage);
   }
 
   message(data){
@@ -258,22 +258,23 @@ class LocalCamera extends Component {
           <h5>
             <i class="material-icons title">group</i> Room : {this.state.roomId}
           </h5>
+          <p id="bg-text">Others can join you by going to {window.location.href}</p>
           <div className = "remotes" id = "remoteVideos" ref = "remotes"> </div>
         </Col>
         <Col s={12} m={2}>
 
             <div className="videoContainer">
-              <Button className='copylink' data-clipboard-text={window.location.href} waves='light'>
+              <Button className='button copylink' data-clipboard-text={window.location.href} waves='light'>
                 Invite
                 <Icon left tiny>link</Icon>
               </Button>
               <Link to="/">
-                <Button className='btn-flat grey lighten-2' waves='light' onClick={this.leaveRoom}>
+                <Button className='button btn-flat grey lighten-2' waves='light' onClick={this.leaveRoom}>
                   Leave
                   <Icon className="red-text" left tiny>call_end</Icon>
                 </Button>
               </Link>
-              <Input s={12} placeholder="Your Name" validate onChange={this.updateUserName} onKeyPress={event => {
+              <Input s={12} placeholder="Your Name (press enter)" validate onChange={this.updateUserName} onKeyPress={event => {
                 let code = event.keyCode || event.which;
                 if(code === 13) { //13 is the enter keycode
                   this.procastUsername();

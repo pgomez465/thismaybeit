@@ -64,10 +64,33 @@ nav{
       height: 100vh;
 }
 .roomContainer{
-  border-left: 1px solid #0000000d;
-  border-right: 1px solid #0000000d;
-  background-color: #d3d3d330;
+  border-left: 1px #e9ecec solid;
+  border-right: 1px #e9ecec solid;
+  background-color: #d3d3d312;
   height: 100vh;
+}
+.button{
+  width: 85%;
+}
+.button i{
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+}
+#bg-text
+{
+    color:lightgrey;
+    font-size:20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: -1;
+    overflow: hidden;
 }
 #headerButtons {
   text-align: center;
