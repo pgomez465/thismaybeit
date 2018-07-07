@@ -165,15 +165,17 @@ class LocalCamera extends Component {
   }
 
   leaveRoom(){
+    this.webrtc.stopLocalVideo();
     this.postMessage(this.state.username + " left chatroom");
     this.webrtc.leaveRoom();
+    this.webrtc.connection.disconnect();
+    this.webrtc = null;
     this.setState({
       username: '',
       roomId: '',
       messages: [],
       mute: false
     });
-    console.log(this.state);
   }
 
   muteToggle(){
