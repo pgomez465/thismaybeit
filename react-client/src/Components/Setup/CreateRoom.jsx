@@ -21,7 +21,12 @@ class CreateRoom extends Component {
         <Col s={12} m={4} className="landing">
           <h2>VChat<Icon tiny>videocam</Icon></h2>
           <div>
-            <Input className="RoomIdInput" placeholder="Choose a room name" s={6} onChange={this.updateRoomId}></Input>
+            <Input className="RoomIdInput" placeholder="Choose a room name" s={6} onChange={this.updateRoomId} onKeyPress={event => {
+              let code = event.keyCode || event.which;
+              if(code === 13) { //13 is the enter keycode
+                this.props.history.push(this.state.roomId);
+              }
+            }}></Input>
           </div>
           <Link to={`/${this.state.roomId}`}>
             <Button waves='light'>
