@@ -12,8 +12,7 @@ class LocalCamera extends Component {
       username: '',
       roomId: this.props.match.params.roomId,
       messages: [],
-      mute: false,
-      showChat: false
+      mute: false
     }
     //Video
     this.addVideo = this.addVideo.bind(this);
@@ -154,9 +153,6 @@ class LocalCamera extends Component {
   createRoom(){
     console.log('Creating new room: ' + this.state.roomId);
     this.webrtc.createRoom(this.state.roomId, (err, name) => {
-      this.setState({
-        showChat: true
-      });
       this.postMessage(this.state.username + " created chatroom");
     });
   }
@@ -164,22 +160,18 @@ class LocalCamera extends Component {
   joinRoom(){
     console.log('Joining room: ' + this.state.roomId);
     this.webrtc.joinRoom(this.state.roomId, (err, roomDescription) =>{
-        this.setState({
-          showChat: true
-        });
         this.postMessage(this.state.username + " joined chatroom");
     });
   }
 
   leaveRoom(){
-    this.webrtc.leaveRoom();
     this.postMessage(this.state.username + " left chatroom");
+    this.webrtc.leaveRoom();
     this.setState({
       username: '',
       roomId: '',
       messages: [],
-      mute: false,
-      showChat: false
+      mute: false
     });
     console.log(this.state);
   }
@@ -261,14 +253,10 @@ class LocalCamera extends Component {
           <Chat messages={this.state.messages} postMessage={this.postMessage}/>
         </Col>
         <Col s={12} m={8} className="roomContainer">
-            {this.state.showChat ?
-              <h5> <i class="material-icons title">group</i> Room : {this.state.roomId}
-
-            </h5>
-              :
-              <h5>Remote</h5>
-            }
-            <div className = "remotes" id = "remoteVideos" ref = "remotes"> </div>
+          <h5>
+            <i class="material-icons title">group</i> Room : {this.state.roomId}
+          </h5>
+          <div className = "remotes" id = "remoteVideos" ref = "remotes"> </div>
         </Col>
         <Col s={12} m={2}>
 
