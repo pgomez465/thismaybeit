@@ -61,7 +61,7 @@ nav{
   width: 95% !important;
 }
 .ChatDiv{
-      height: 100vh;
+  height: 100vh;
 }
 .roomContainer{
   border-left: 1px #e9ecec solid;
@@ -83,14 +83,25 @@ nav{
 }
 #bg-text
 {
-    color:lightgrey;
-    font-size:20px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    z-index: -1;
-    overflow: hidden;
+  color:lightgrey;
+  font-size:20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: -1;
+  overflow: hidden;
+}
+.suffix {
+  width:1%;
+  color: #aaa;
+}
+.messageBtn {
+  margin-right: 20px;
+  margin-top: 33px;
+}
+#top > div:nth-child(1) > div > div.chat > div > div > div:nth-child(2){
+  width: 87%;
 }
 #headerButtons {
   text-align: center;

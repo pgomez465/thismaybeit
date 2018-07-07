@@ -55,6 +55,7 @@ class Chat extends Component {
 
   post(){
     if(this.state.message.length > 0){
+      $('.messageBtn').css('color', '#aaa');
       this.props.postMessage(this.state.message);
       this.setState({
         message: ''
@@ -63,6 +64,11 @@ class Chat extends Component {
   }
 
   setMessage(event){
+    if(event.target.value.length > 0){
+      $('.messageBtn').css('color', '#26a69a');
+    } else {
+      $('.messageBtn').css('color', '#aaa');
+    }
     this.setState({
       message: event.target.value
     });
@@ -79,22 +85,25 @@ class Chat extends Component {
               {this.props.messages.map((message) => {
                 return  <Row><Avatar id="name-avatar" isOwn={true} letter={message.username.charAt(0).toUpperCase()} />
                 <Message authorName={message.username} date={message.postedOn}>
-                  <MessageText>{message.message}</MessageText>
+                  <MessageText style={{"width":"86%"}}>{message.message}</MessageText>
                 </Message></Row>
               })}
             </MessageList>
           </ThemeProvider>
         </div>
         <hr/>
-        <Input s={6} value={this.state.message} label="Message" onChange={this.setMessage} onKeyPress={event => {
+        <Input placeholder="Write a message..." value={this.state.message} validate type='text' onChange={this.setMessage} onKeyPress={event => {
           let code = event.keyCode || event.which;
           if(code === 13) { //13 is the enter keycode
             this.post();
           }
-        }}/>
-        <Button waves='light' onClick={this.post}><Icon>send</Icon></Button>
-      </div>
-    );
-  }
+        }}>
+      </Input>
+      <span class="suffix" onClick={this.post}>
+        <Icon ref={ref => this.subbmit = ref} className="messageBtn">send</Icon>
+      </span>
+    </div>
+  );
+}
 }
 export default Chat;
