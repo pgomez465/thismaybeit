@@ -36,6 +36,8 @@ nav{
 #name-avatar{
   background-color: #9e9e9e;
   color: white;
+  width: 31px;
+  min-width:31px;
 }
 .remoteCam{
   position: relative;

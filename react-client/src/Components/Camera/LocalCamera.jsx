@@ -4,16 +4,14 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import Chat from '../Chat/Chat';
 import Clipboard from 'clipboard';
+import { connect } from "react-redux";
+import { setRoomId, setUserName, addMessage, Mute, reset } from "../../actions/index";
 import {Row, Col, CardPanel, Input, Button, Icon} from 'react-materialize';
 class LocalCamera extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      username: '',
-      roomId: this.props.match.params.roomId,
-      messages: [],
-      mute: false
-    }
+
+    this.props.setRoomId(this.props.match.params.roomId);
     //Video
     this.addVideo = this.addVideo.bind(this);
     this.removeVideo = this.removeVideo.bind(this);
@@ -21,7 +19,6 @@ class LocalCamera extends Component {
     //Chat room
     this.updateUserName = this.updateUserName.bind(this);
     this.procastUsername = this.procastUsername.bind(this);
-    this.updateRoomId = this.updateRoomId.bind(this);
     this.createRoom = this.createRoom.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.leaveRoom = this.leaveRoom.bind(this);
@@ -43,7 +40,7 @@ class LocalCamera extends Component {
       localVideoEl: ReactDOM.findDOMNode(this.refs.local),
       remoteVideosEl: "",
       autoRequestMedia: true,
-      nick: this.state.username,
+      nick: this.props.userName,
       autoRequestMedia: true,
       debug: false,
       detectSpeakingEvents: true,
@@ -69,6 +66,10 @@ class LocalCamera extends Component {
       console.info('Trigger:', e.trigger);
       $('.copylink').html('Copied Link!');
     });
+
+  }
+
+  componentWillUnmount(){
 
   }
 
@@ -116,7 +117,7 @@ class LocalCamera extends Component {
       };
       remotes.appendChild(container);
       setTimeout(() =>{
-        this.webrtc.sendDirectlyToAll(this.state.roomId, "setDisplayName", this.state.username);
+        this.webrtc.sendDirectlyToAll(this.props.roomId, "setDisplayName", this.props.userName);
       }, 1000);
     }
   }
@@ -131,63 +132,50 @@ class LocalCamera extends Component {
   }
 
   readyToCall() {
-    this.joinRoom();;
+    console.log("I am ready to call and join");
+    this.joinRoom();
   }
 
   updateUserName(event){
-    this.setState({
-      username: event.target.value
-    });
+    this.props.setUserName(event.target.value);
   }
 
   procastUsername(){
-    this.webrtc.sendDirectlyToAll(this.state.roomId, "setDisplayName", this.state.username);
-  }
-
-  updateRoomId(event){
-    this.setState({
-      roomId: event.target.value
-    });
+    this.webrtc.sendDirectlyToAll(this.props.roomId, "setDisplayName", this.props.userName);
   }
 
   createRoom(){
-    console.log('Creating new room: ' + this.state.roomId);
-    this.webrtc.createRoom(this.state.roomId, (err, name) => {
-      this.postMessage(this.state.username + " created chatroom");
+    console.log('Creating new room: ' + this.props.roomId);
+    this.webrtc.createRoom(this.props.roomId, (err, name) => {
+      this.postMessage(this.props.userName + " created chatroom");
     });
   }
 
   joinRoom(){
-    console.log('Joining room: ' + this.state.roomId);
-    this.webrtc.joinRoom(this.state.roomId, (err, roomDescription) =>{
-        this.postMessage(this.state.username + " joined chatroom");
+    console.log('Joining room: ' + this.props.roomId);
+    this.webrtc.joinRoom(this.props.roomId, (err, roomDescription) =>{
+        this.postMessage(this.props.userName + " joined chatroom");
     });
   }
 
   leaveRoom(){
-    this.webrtc.stopLocalVideo();
-    this.postMessage(this.state.username + " left chatroom");
     this.webrtc.leaveRoom();
+    this.webrtc.stopLocalVideo();
     this.webrtc.connection.disconnect();
+    this.webrtc.disconnect();
+    this.postMessage(this.props.userName + " left chatroom");
     this.webrtc = null;
-    this.setState({
-      username: '',
-      roomId: '',
-      messages: [],
-      mute: false
-    });
+    this.props.reset();
   }
 
   muteToggle(){
-    console.log("mute: " + this.state.mute)
-    if(!this.state.mute){
+    console.log("mute: " + this.props.mute)
+    if(!this.props.mute){
       this.webrtc.mute();
     } else {
       this.webrtc.unmute();
     }
-    this.setState({
-      mute: !this.state.mute
-    });
+    this.props.Mute();
   }
 
   // helper function to show the volume
@@ -224,39 +212,36 @@ class LocalCamera extends Component {
   }
 
   postMessage(message){
-    const username = this.state.username;
+    const username = this.props.userName;
     const chatMessage = {
       username,
       message,
       postedOn: new Date().toLocaleString('en-GB'),
     }
-    this.setState({
-      messages: [...this.state.messages, chatMessage]
-    });
+    console.log(chatMessage);
+    this.props.addMessage(chatMessage);
     this.webrtc.sendToAll('chat', chatMessage);
   }
 
   message(data){
     if (data.type === 'chat') {
       const recievedMsg = data.payload;
-      this.setState({
-        messages: [...this.state.messages, recievedMsg]
-      });
+      this.props.addMessage(recievedMsg);
     }
   }
 
   render() {
     const isEnabled =
-    this.state.username.length > 0 &&
-    this.state.roomId.length > 0;
+    this.props.userName.length > 0 &&
+    this.props.roomId.length > 0;
     return (
       <Row id="top">
         <Col s={12} m={2} >
-          <Chat messages={this.state.messages} postMessage={this.postMessage}/>
+          <Chat postMessage={this.postMessage}/>
         </Col>
         <Col s={12} m={8} className="roomContainer">
           <h5>
-            <i class="material-icons title">group</i> Room : {this.state.roomId}
+            <i class="material-icons title">group</i> Room : {this.props.roomId}
           </h5>
           <p id="bg-text">Others can join you by going to {window.location.href}</p>
           <div className = "remotes" id = "remoteVideos" ref = "remotes"> </div>
@@ -286,7 +271,7 @@ class LocalCamera extends Component {
               id = "localVideo"
               ref = "local"> </video>
               <a class="waves-effect waves-light grey lighten-2" onClick={this.muteToggle}>
-                <i className={`Small material-icons title ${this.state.mute ? "red-text" : "green-text"}`}>{this.state.mute ? "mic_off" : "mic"}</i>
+                <i className={`Small material-icons title ${this.props.mute ? "red-text" : "green-text"}`}>{this.props.mute ? "mic_off" : "mic"}</i>
               </a>
               <meter id="localVolume" className="volume" min="-45" max="-20" low="-40" high="-25"></meter>
             </div>
@@ -295,4 +280,23 @@ class LocalCamera extends Component {
       );
     }
   }
-  export default LocalCamera;
+
+  const mapDispatchToProps = dispatch => {
+    return {
+      setRoomId: roomId => dispatch(setRoomId(roomId)),
+      setUserName: username => dispatch(setUserName(username)),
+      addMessage: message => dispatch(addMessage(message)),
+      Mute: toggle => dispatch(Mute(toggle)),
+      reset: () => dispatch(reset())
+    };
+  };
+
+  const mapStateToProps = state => {
+    return {
+      roomId: state.roomId,
+      userName: state.userName,
+      messages: state.messages,
+      mute: state.mute
+    };
+  };
+  export default connect(mapStateToProps, mapDispatchToProps)(LocalCamera);

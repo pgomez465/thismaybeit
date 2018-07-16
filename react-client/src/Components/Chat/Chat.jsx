@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import SimpleWebRTC from 'simplewebrtc';
 import ReactDOM from 'react-dom';
+import { connect } from "react-redux";
+import { setMessage, addMessage } from "../../actions/index";
 import { Col, CardPanel, Input, Button, Icon} from 'react-materialize'
 import { ThemeProvider,FixedWrapper, MessageList, MessageGroup, Message, MessageText, Avatar, Row, TitleBar, IconButton, CloseIcon} from '@livechat/ui-kit'
 //Define theme for live chat
@@ -30,9 +32,6 @@ const theme = {
 class Chat extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      message: ""
-    }
     this.post = this.post.bind(this);
     this.setMessage = this.setMessage.bind(this);
   }
@@ -54,12 +53,10 @@ class Chat extends Component {
   }
 
   post(){
-    if(this.state.message.length > 0){
+    if(this.props.message.length > 0){
       $('.messageBtn').css('color', '#aaa');
-      this.props.postMessage(this.state.message);
-      this.setState({
-        message: ''
-      });
+      this.props.postMessage(this.props.message);
+      this.props.setMessage("");
     }
   }
 
@@ -69,9 +66,7 @@ class Chat extends Component {
     } else {
       $('.messageBtn').css('color', '#aaa');
     }
-    this.setState({
-      message: event.target.value
-    });
+    this.props.setMessage(event.target.value);
   }
 
   render(){
@@ -84,26 +79,47 @@ class Chat extends Component {
             <MessageList active containScrollInSubtree>
               {this.props.messages.map((message) => {
                 return  <Row><Avatar id="name-avatar" isOwn={true} letter={message.username.charAt(0).toUpperCase()} />
-                <Message authorName={message.username} date={message.postedOn}>
-                  <MessageText style={{"width":"86%"}}>{message.message}</MessageText>
+                <Message style={{"width":"100%"}} authorName={message.username} date={message.postedOn}>
+                  <MessageText style={{"width":"100%"}}>{message.message}</MessageText>
                 </Message></Row>
               })}
             </MessageList>
           </ThemeProvider>
         </div>
         <hr/>
-        <Input placeholder="Write a message..." value={this.state.message} validate type='text' onChange={this.setMessage} onKeyPress={event => {
-          let code = event.keyCode || event.which;
-          if(code === 13) { //13 is the enter keycode
-            this.post();
-          }
-        }}>
-      </Input>
-      <span class="suffix" onClick={this.post}>
-        <Icon ref={ref => this.subbmit = ref} className="messageBtn">send</Icon>
-      </span>
+        <div>
+          <Col s={12} m={10} >
+            <Input placeholder="Write a message..." value={this.props.message} validate type='text' onChange={this.setMessage} onKeyPress={event => {
+              let code = event.keyCode || event.which;
+              if(code === 13) { //13 is the enter keycode
+                this.post();
+              }
+            }}>
+          </Input>
+        </Col>
+        <Col s={12} m={2} >
+          <span class="suffix" onClick={this.post}>
+            <Icon ref={ref => this.subbmit = ref} className="messageBtn">send</Icon>
+          </span>
+        </Col>
+      </div>
     </div>
   );
 }
 }
-export default Chat;
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addMessage: message => dispatch(addMessage(message)),
+    setMessage: message => dispatch(setMessage(message))
+  };
+};
+
+const mapStateToProps = state => {
+  return {
+    userName: state.userName,
+    messages: state.messages,
+    message: state.message
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
