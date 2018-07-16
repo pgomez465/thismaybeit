@@ -45,7 +45,8 @@ class LocalCamera extends Component {
       debug: false,
       detectSpeakingEvents: true,
       autoAdjustMic: false,
-      url: "https://signalmaster-118.herokuapp.com/"
+      url: "https://signalmaster-118.herokuapp.com/",
+      socketio: {'force new connection':true}
     });
 
     console.log("webrtc component mounted");
@@ -159,12 +160,11 @@ class LocalCamera extends Component {
   }
 
   leaveRoom(){
-    this.webrtc.leaveRoom();
     this.webrtc.stopLocalVideo();
+    this.webrtc.leaveRoom();
     this.webrtc.connection.disconnect();
     this.webrtc.disconnect();
     this.postMessage(this.props.userName + " left chatroom");
-    this.webrtc = null;
     this.props.reset();
   }
 
