@@ -45,7 +45,7 @@ class LocalCamera extends Component {
       debug: false,
       detectSpeakingEvents: true,
       autoAdjustMic: false,
-      url: "https://signalmaster-118.herokuapp.com/",
+      url: "https://signalmaster-xirsys.herokuapp.com/",
       socketio: {'force new connection':true}
     });
 
