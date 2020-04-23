@@ -17,9 +17,9 @@ class CreateRoom extends Component {
       <Row>
         <Col s={12} m={4} ></Col>
         <Col s={12} m={4} className="landing">
-          <h2>VChat<Icon tiny>videocam</Icon></h2>
+          <h2>Imlach Chat<Icon tiny>videocam</Icon></h2>
           <div>
-            <Input className="RoomIdInput" placeholder="Choose a room name" s={6} onChange={this.updateRoomId} onKeyPress={event => {
+            <Input className="RoomIdInput" placeholder="Enter Driver ID" s={6} onChange={this.updateRoomId} onKeyPress={event => {
               let code = event.keyCode || event.which;
               if(code === 13) { //13 is the enter keycode
                 this.props.history.push(this.props.roomId);
