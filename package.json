@@ -32,6 +32,6 @@
     "webrtc-adapter": "^6.2.1"
   },
   "devDependencies": {
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.3.12"
   }
 }
